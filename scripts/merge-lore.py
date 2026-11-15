@@ -57,7 +57,7 @@ HOST_TO_SUB = {
 
 TEXT_EXTS = {".html", ".css", ".js", ".json", ".py", ".md", ".mjs", ".txt"}
 HUB_LINK = '<a href="/" class="series-link">全部游戏</a>'
-NAV_RE = re.compile(r'(<nav class="series-nav-bar"[^>]*>.*?</nav>)', re.S)
+NAV_RE = re.compile(r'(<(nav|div) class="series-nav-bar"[^>]*>.*?</\2>)', re.S)
 
 
 def sha256(path):
@@ -114,7 +114,8 @@ def add_hub_link(index_path):
     if not match:
         return False
     nav = match.group(1)
-    new_nav = nav.replace("</nav>", HUB_LINK + "</nav>", 1)
+    tag = match.group(2)
+    new_nav = nav.replace(f"</{tag}>", HUB_LINK + f"</{tag}>", 1)
     index_path.write_text(text.replace(nav, new_nav, 1), encoding="utf-8")
     return True
 
