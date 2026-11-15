@@ -1,0 +1,8 @@
+{
+  "name": "lore-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:media": "node --test worker/media.test.mjs"
+  }
+}

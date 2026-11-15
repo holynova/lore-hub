@@ -1,0 +1,42 @@
+name: Merge lore sites
+
+# One-time (re-runnable) merge: pulls the 7 lore sites into sub-paths.
+# The merge script is idempotent, so re-running is a no-op when nothing
+# changed upstream. Run from the Actions tab (workflow_dispatch).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out lore-hub
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone source sites
+        run: |
+          mkdir -p _sources
+          for repo in elden-ring-lore witcher-3-lore gta5-lore rdr2-lore cyberpunk-2077-lore elden-ring-lore-video dark-souls-3-lore; do
+            git clone --depth 1 "https://github.com/holynova/${repo}.git" "_sources/${repo}"
+          done
+
+      - name: Merge into sub-paths
+        run: python3 scripts/merge-lore.py
+
+      - name: Commit and push
+        run: |
+          rm -rf _sources
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: merge 7 lore sites into sub-paths"
+            git push
+          fi
