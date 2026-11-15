@@ -29,7 +29,7 @@
 npx wrangler deploy
 ```
 
-Worker 名 `lore-hub`，路由 `lore.xiaosang.cc/*`（另有 7 条旧域名路由指到同一 Worker 做跳转）。视频走 Worker 做字节范围请求（见 `worker/media.mjs`），测试：`npm run test:media`。
+Worker 复用旧名 `elden-ring-lore`（账号在 Workers Free 套餐 100 个 Worker 上限下已有 136 个，建不了名叫 `lore-hub` 的新 Worker，见 `wrangler.jsonc` 注释；升级到 Paid 后可改名重部署）。路由 `lore.xiaosang.cc/*`（另有 7 条旧域名路由指到同一 Worker 做跳转）。视频走 Worker 做字节范围请求（见 `worker/media.mjs`），测试：`npm run test:media`。
 
 ## 已知问题
 
