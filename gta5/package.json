@@ -1,0 +1,15 @@
+{
+  "name": "gta5-lore",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "HYPERFRAMES_BROWSER_PATH=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" hyperframes check",
+    "render": "HYPERFRAMES_BROWSER_PATH=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" hyperframes render -o gta5_lore.mp4 --workers 1",
+    "preview": "hyperframes preview --background",
+    "test:media": "node --test worker/media.test.mjs"
+  },
+  "dependencies": {
+    "hyperframes": "0.8.114",
+    "gsap": "3.14.2"
+  }
+}

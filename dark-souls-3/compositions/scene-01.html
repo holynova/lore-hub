@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"></head>
+<body>
+<template>
+<style>
+
+  @font-face {
+    font-family: LabChinese;
+    src: url('/assets/PingFang.ttc');
+  }
+  * { box-sizing: border-box; }
+  #root {
+    position: absolute;
+    inset: 0;
+    background: #06080d;
+    color: #f1f5f9;
+    font-family: LabChinese, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .bg-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.38;
+    filter: brightness(0.78) contrast(1.2) saturate(1.1);
+  }
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 35%, rgba(6,8,13,0.3) 0%, rgba(5,6,9,0.92) 80%);
+  }
+  .ember-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Global Timeline Rail */
+  .timeline-rail {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 15;
+  }
+  .timeline-steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .timeline-node {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #64748b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .timeline-node.active {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+  }
+  .timeline-arrow {
+    color: #475569;
+    font-size: 14px;
+  }
+  .topic-tag {
+    font-size: 18px;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  /* Hero Title Area */
+  .title-area {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 96px;
+    z-index: 10;
+  }
+  .main-title {
+    font-size: 54px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 20%, #fde68a 55%, #f59e0b 85%, #d97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+  }
+  .sub-tagline {
+    font-size: 22px;
+    color: #e2e8f0;
+    margin-top: 8px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tagline-badge {
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  /* Split Layout Container */
+  .content-split {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 225px;
+    bottom: 125px;
+    display: flex;
+    gap: 36px;
+    z-index: 10;
+  }
+
+  /* Left Flow / Logic Column */
+  .logic-column {
+    flex: 1.15;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logic-box {
+    background: linear-gradient(145deg, rgba(17, 24, 39, 0.85) 0%, rgba(9, 13, 22, 0.92) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px 24px;
+    position: relative;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
+  .logic-box.highlight {
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(245, 158, 11, 0.15);
+  }
+  .logic-box.danger {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(239, 68, 68, 0.15);
+  }
+  .box-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .box-pill {
+    font-size: 14px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+  }
+  .box-pill.gold {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+  }
+  .box-pill.red {
+    background: rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+  }
+  .box-pill.blue {
+    background: rgba(59, 130, 246, 0.25);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+  }
+  .box-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: 1px;
+  }
+  .box-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bullet-item {
+    font-size: 18px;
+    line-height: 1.45;
+    color: #cbd5e1;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .bullet-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+    margin-top: 10px;
+    flex-shrink: 0;
+  }
+  .bullet-item b {
+    color: #fbbf24;
+  }
+  .bullet-item.alert b {
+    color: #f87171;
+  }
+
+  /* Right Art Card Column */
+  .art-column {
+    flex: 0.85;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid rgba(245, 158, 11, 0.35);
+    background: #0d111a;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.8), 0 0 35px rgba(245, 158, 11, 0.15);
+  }
+  .art-img-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .art-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .art-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(6,8,13,0.1) 40%, rgba(6,8,13,0.95) 100%);
+  }
+  .art-info-overlay {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    z-index: 5;
+  }
+  .art-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    background: rgba(245, 158, 11, 0.25);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    color: #fbbf24;
+    margin-bottom: 8px;
+  }
+  .art-name {
+    font-size: 34px;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+    letter-spacing: 1.5px;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.8);
+  }
+  .art-desc {
+    font-size: 17px;
+    color: #cbd5e1;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* Bottom Floating Subtitle (No Progress Bar!) */
+  .caption-container {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    bottom: 28px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 25;
+  }
+  .caption-box {
+    position: absolute;
+    background: rgba(8, 11, 18, 0.94);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(245, 158, 11, 0.45);
+    padding: 14px 44px;
+    border-radius: 40px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.85), 0 0 25px rgba(245, 158, 11, 0.2);
+    text-align: center;
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+
+  /* Special Grid for Scene 3 (4 Lords) */
+  .grid-4-lords {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 220px;
+    bottom: 125px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    z-index: 10;
+  }
+  .lord-card {
+    background: linear-gradient(160deg, rgba(20, 26, 40, 0.88) 0%, rgba(10, 13, 20, 0.95) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+    position: relative;
+  }
+  .lord-card.active-glow {
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px rgba(245, 158, 11, 0.2);
+  }
+  .lord-card-img-wrap {
+    height: 230px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .lord-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lord-card-content {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+  }
+  .lord-card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+  }
+  .lord-card-badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    margin-bottom: 10px;
+  }
+  .lord-card-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lord-bullet {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #cbd5e1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .lord-bullet-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #f59e0b;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .lord-bullet b {
+    color: #fbbf24;
+  }
+
+</style>
+<div id="root" data-composition-id="scene-01" data-width="1920" data-height="1080" style="width:1920px;height:1080px;position:relative;overflow:hidden;">
+  <div class="bg-wrap" data-layout-allow-overflow>
+    <img id="scene-01-bg" class="bg-img" src="assets/images/scene01_awakening.jpg" data-layout-allow-overflow data-duration="25.5" />
+    <div class="bg-overlay"></div>
+    <div class="ember-glow"></div>
+  </div>
+
+  <div class="timeline-rail">
+    <div class="timeline-steps">
+      <div class="timeline-node active">01 葛温源头</div>
+      <div class="timeline-arrow">➔</div>
+      <div class="timeline-node">02 薪王罢工</div>
+      <div class="timeline-arrow">➔</div>
+      <div class="timeline-node">03 叛逃真相</div>
+      <div class="timeline-arrow">➔</div>
+      <div class="timeline-node">04 余灰催债</div>
+      <div class="timeline-arrow">➔</div>
+      <div class="timeline-node">05 终局决战</div>
+      <div class="timeline-arrow">➔</div>
+      <div class="timeline-node">06 灭火破晓</div>
+    </div>
+    <div class="topic-tag">前因后果 · 宇宙级诅咒诞生</div>
+  </div>
+
+  <div class="title-area">
+    <h1 class="main-title">起源与前因 · 葛温的万年诅咒</h1>
+    <div class="sub-tagline">
+      <span class="tagline-badge">万恶之源</span>
+      <span>并不是为了救世，而是神权为了永恒特权的自我献祭！</span>
+    </div>
+  </div>
+
+  <div class="content-split">
+    <!-- Left Logic Flow -->
+    <div class="logic-column">
+      <div id="node-01-1" class="logic-box highlight">
+        <div class="box-header">
+          <span class="box-pill gold">起因 · 初火衰退</span>
+          <span class="box-title">统治危机：火熄则神权覆灭</span>
+        </div>
+        <div class="box-bullets">
+          <div class="bullet-item"><div class="bullet-dot"></div><span>初火诞生孕育了巨人和众神，<b>太阳王葛温</b>建立起至高统治。</span></div>
+          <div class="bullet-item"><div class="bullet-dot"></div><span>然而初火终有寿命，一旦熄灭，属于<b>人类与深渊的黑暗时代</b>必将来临。</span></div>
+        </div>
+      </div>
+
+      <div id="node-01-2" class="logic-box danger">
+        <div class="box-header">
+          <span class="box-pill red">转折 · 以身饲火</span>
+          <span class="box-title">葛温投火：违背自然的极端血祭</span>
+        </div>
+        <div class="box-bullets">
+          <div class="bullet-item"><div class="bullet-dot"></div><span>因极度恐惧黑暗，葛温率领骑士前往初始火炉，<b>强行将自身神魂当柴烧</b>！</span></div>
+          <div class="bullet-item"><div class="bullet-dot"></div><span>初代薪王诞生，初火强行续命，但<b>自然生死法则自此彻底崩坏</b>！</span></div>
+        </div>
+      </div>
+
+      <div id="node-01-3" class="logic-box">
+        <div class="box-header">
+          <span class="box-pill blue">后果 · 诅咒套牢</span>
+          <span class="box-title">定下铁律：每隔千年必须献祭王者</span>
+        </div>
+        <div class="box-bullets">
+          <div class="bullet-item"><div class="bullet-dot"></div><span>初火每隔千年就会再次熄灭，必须抓捕最强王者<b>周而复始地自焚献祭</b>。</span></div>
+          <div class="bullet-item"><div class="bullet-dot"></div><span>人类被烙上不死人诅咒，世间生灵永受折磨——这正是<b>黑魂3危机的真正根源</b>！</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Art Card (Nano Gwyn Art) -->
+    <div id="art-01" class="art-column">
+      <div class="art-img-wrap" data-layout-allow-overflow>
+        <img id="nano-gwyn-img" class="art-img" src="assets/images/nano_gwyn.jpg" data-layout-allow-overflow data-duration="25.5" />
+        <div class="art-gradient-overlay"></div>
+        <div class="art-info-overlay">
+          <div class="art-badge">初代薪王 / 始作俑者</div>
+          <h2 class="art-name">太阳王 · 葛温</h2>
+          <p class="art-desc">
+            "为了维系神族的黄金幻象，他强行点燃了自身，却把整个世界拖入了永无止境的炼狱与枯竭！"
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Captions -->
+  <div class="caption-container">
+    <div id="c-01-1" class="caption-box" style="opacity: 0;">很多朋友看黑魂总觉得看不懂，其实黑魂三底层逻辑极其硬核！</div>
+    <div id="c-01-2" class="caption-box" style="opacity: 0;">一切前因回到最初：神王葛温为维系神权，强行以身投火开启诅咒！</div>
+    <div id="c-01-3" class="caption-box" style="opacity: 0;">从此天地定下规矩：初火每隔千年熄灭，必须献祭强者给世界续命！</div>
+    <div id="c-01-4" class="caption-box" style="opacity: 0;">这一场违背自然规律的万年循环，彻底拉开了黑魂三的残酷大幕！</div>
+  </div>
+</div>
+<script>
+{
+  const tl = gsap.timeline({ paused: true });
+  
+  // Background Pan
+  tl.fromTo("#scene-01-bg", { scale: 1.0, y: 0 }, { scale: 1.08, y: -25, duration: 25.5, ease: "none" }, 0);
+  tl.fromTo("#nano-gwyn-img", { scale: 1.05 }, { scale: 1.15, duration: 25.5, ease: "none" }, 0);
+
+  // Layout In
+  tl.fromTo(".timeline-rail", { opacity: 0, y: -15 }, { opacity: 1, y: 0, duration: 0.6 }, 0.2);
+  tl.fromTo(".title-area", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.8 }, 0.4);
+  tl.fromTo("#art-01", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 0.6);
+
+  // Nodes Sequence
+  tl.fromTo("#node-01-1", { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.6 }, 0.8);
+  tl.fromTo("#node-01-2", { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.6 }, 5.5);
+  tl.fromTo("#node-01-3", { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.6 }, 13.0);
+
+  // Captions
+  tl.set("#c-01-1", { opacity: 1 }, 0.50).set("#c-01-1", { opacity: 0 }, 5.30);
+  tl.set("#c-01-2", { opacity: 1 }, 5.50).set("#c-01-2", { opacity: 0 }, 12.80);
+  tl.set("#c-01-3", { opacity: 1 }, 13.00).set("#c-01-3", { opacity: 0 }, 18.80);
+  tl.set("#c-01-4", { opacity: 1 }, 19.00).set("#c-01-4", { opacity: 0 }, 24.50);
+
+  window.__timelines["scene-01"] = tl;
+}
+</script>
+</template>
+</body>
+</html>
