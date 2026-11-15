@@ -6,6 +6,9 @@
   // lore.xiaosang.cc plus 301s for the 7 old hosts. After upgrading to
   // Workers Paid, rename this to "lore-hub" and re-deploy, then move the
   // 8 routes to the new Worker.
+  // IMPORTANT: all 8 routes must stay listed here. Wrangler prunes any
+  // route pointing at this Worker that is not in this list on deploy
+  // (2026-11-15: one deploy deleted all 7 old-host routes).
   "name": "elden-ring-lore",
   "account_id": "ef7863c4de93e71c3496f940c8ab4865",
   "compatibility_date": "2026-10-04",
@@ -20,6 +23,34 @@
   "routes": [
     {
       "pattern": "lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "elden-ring-lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "witcher-3-lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "gta5-lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "rdr2-lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "cyberpunk-2077-lore.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "elden-ring-lore-video.xiaosang.cc/*",
+      "zone_name": "xiaosang.cc"
+    },
+    {
+      "pattern": "dark-souls-3-lore.xiaosang.cc/*",
       "zone_name": "xiaosang.cc"
     }
   ],
