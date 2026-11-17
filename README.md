@@ -1,37 +1,74 @@
-# lore-hub · 游戏剧情解析
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="游戏剧情解析 Lore Hub — 七部游戏的中文剧情视频：章节跳转，把因果讲明白，总片长约 22 分钟">
+</p>
 
-七个游戏剧情解析站合并后的总站，部署在 https://lore.xiaosang.cc/。
+游戏剧情解析是七部游戏的中文剧情视频总站：每部游戏一支短片，用分幕叙事把主线因果讲明白，配章节跳转、倍速播放与原片下载。2026-11-15 由 7 个独立的游戏剧情站合并而成，各站占一个子路径。
 
-| 分区 | 游戏 | 原仓库 |
-| --- | --- | --- |
-| `/elden-ring/` | 艾尔登法环（六幕） | holynova/elden-ring-lore |
-| `/witcher-3/` | 巫师三（六幕） | holynova/witcher-3-lore |
-| `/gta5/` | GTA5（六幕） | holynova/gta5-lore |
-| `/rdr2/` | 荒野大镖客2（六幕） | holynova/rdr2-lore |
-| `/cyberpunk-2077/` | 赛博朋克2077（六幕） | holynova/cyberpunk-2077-lore |
-| `/dark-souls-3/` | 黑暗之魂3（六幕） | holynova/dark-souls-3-lore |
-| `/elden-ring-video/` | 艾尔登法环编年史（五章） | holynova/elden-ring-lore-video |
+Lore Hub collects Chinese lore-explainer videos for seven games: one short film per game, told in chapters so the story's causes and consequences are easy to follow, with chapter navigation, speed control and downloadable originals. Merged on 2026-11-15 from seven standalone lore sites, each now living under its own subpath.
 
-## 合并方式
+## 截图 / Screenshot
 
-`scripts/merge-lore.py` 是合并脚本，`.github/workflows/merge.yml`
-在 Actions 里跑它：浅克隆 7 个源仓库 main，把每站内容放进对应子路径，
-提交回 main。脚本幂等，重跑结果一致。
+<p align="center">
+  <img src="./assets/readme/screenshot-hub.png" width="100%" alt="总站首页：七部游戏的卡片墙，每张卡片有游戏主视觉、标题、一句话简介与幕数片长">
+</p>
 
-- 5 份 74MB 苹方字体只留一份在 `/assets/PingFang.ttc`（字体只在合成工程里用，页面用系统字体栈；字体文件不进部署，见 `.assetsignore`）。
-- 各站页脚系列导航的旧域名链接改指新子路径，并加了回总站的「全部游戏」链接。
-- 旧的 7 个子域名由 Worker 做 301 跳转到对应分区（路径保留），旧 Worker 脚本保留未删。
-- 各站的合成工程（`compositions/`、`composition.html`、生成脚本）原样保留在分区内，不进部署。
+## 七部游戏 / The Seven Games
 
-## 部署
+| 游戏 | 子路径 | 一句话 | 篇幅 |
+|---|---|---|---|
+| 艾尔登法环 | `elden-ring/` | 黄金律法前因与群星破晓 | 六幕 · 3 分 27 秒 |
+| 巫师三 | `witcher-3/` | 狂猎阴影下的千里寻女与长者之血破晓 | 六幕 · 3 分 58 秒 |
+| GTA5 | `gta5/` | 洛圣都三叉戟的爱恨情仇与世纪大劫案 | 六幕 · 3 分 51 秒 |
+| 荒野大镖客2 | `rdr2/` | 无法之徒的穷途末路与崇高救赎 | 六幕 · 3 分 44 秒 |
+| 赛博朋克2077 | `cyberpunk-2077/` | 夜之城绞肉机与向死而生 | 六幕 · 3 分 36 秒 |
+| 黑暗之魂3 | `dark-souls-3/` | 万年传火因果与终局破晓 | 六幕 · 2 分 51 秒 |
+| 艾尔登法环编年史 | `elden-ring-video/` | 史诗交界地编年史，五章速览 | 五章 · 1 分 05 秒 |
 
-```sh
-npx wrangler deploy
+总片长约 22 分钟；成片均为 1080P、30fps。**包含主线与结局剧透。**
+
+## 观看 / Watching
+
+- 每个子路径下的 `index.html` 是公开播放器：点章节卡片跳转到对应视频时间，支持倍速播放，可下载原片。
+- 旁白与配乐随仓库保存在各站的 `assets/` 里；视频合成源码（`composition.html`、`compositions/`）也保留在各站目录内。
+
+## 本地运行 / Run Locally
+
+零构建，起一个静态服务器，从总站首页选游戏：
+
+```bash
+python3 -m http.server 8080
+# 打开 http://localhost:8080
 ```
 
-Worker 复用旧名 `elden-ring-lore`（账号在 Workers Free 套餐 100 个 Worker 上限下已有 136 个，建不了名叫 `lore-hub` 的新 Worker，见 `wrangler.jsonc` 注释；升级到 Paid 后可改名重部署）。路由 `lore.xiaosang.cc/*`（另有 7 条旧域名路由指到同一 Worker 做跳转）。视频走 Worker 做字节范围请求（见 `worker/media.mjs`），测试：`npm run test:media`。
+播放器直接使用仓库里的成片，无需先渲染。重新渲染视频需另装合成工程依赖，见各站内的说明。
 
-## 已知问题
+## 目录结构 / Structure
 
-- `#42` 赛博朋克2077 第四幕配图错误（人物与图不符），待定夺，合并时保持原样。
-- `#43` 法环编年史的视频封面图 `snapshots/frame-00-at-5s.png` 在部署中被排除，线上 404——合并前已存在，非本次引入。
+```
+index.html            总站首页：7 张游戏卡片
+elden-ring/           艾尔登法环（六幕，3:27）
+witcher-3/            巫师三（六幕，3:58）
+gta5/                 GTA5（六幕，3:51）
+rdr2/                 荒野大镖客2（六幕，3:44）
+cyberpunk-2077/       赛博朋克2077（六幕，3:36）
+dark-souls-3/         黑暗之魂3（六幕，2:51）
+elden-ring-video/     艾尔登法环编年史（五章，1:05）
+scripts/merge-lore.py 总站合并脚本（幂等）
+assets/PingFang.ttc   合成工程共用字体（页面用系统字体栈）
+```
+
+每个游戏目录内：`index.html`（播放器）、成片 `.mp4`、`scenes_meta.json`（分幕信息）、`composition.html` + `compositions/`（合成源码）、`assets/`（旁白、配乐、配图）。
+
+## English
+
+**Lore Hub** is a hub of Chinese lore-explainer videos for seven games — one short film per game, told in chapters, with chapter navigation, speed control and downloadable originals. Total runtime about 22 minutes; all films are 1080p, 30fps. **Contains main-story and ending spoilers.**
+
+- **Elden Ring** (`elden-ring/`, 6 chapters, 3:27), **The Witcher 3** (`witcher-3/`, 6 chapters, 3:58), **GTA V** (`gta5/`, 6 chapters, 3:51), **Red Dead Redemption 2** (`rdr2/`, 6 chapters, 3:44), **Cyberpunk 2077** (`cyberpunk-2077/`, 6 chapters, 3:36), **Dark Souls III** (`dark-souls-3/`, 6 chapters, 2:51), **Elden Ring Chronicle** (`elden-ring-video/`, 5 chapters, 1:05).
+- **Watch**: each subpath's `index.html` is a player — click a chapter card to jump to that timestamp. Narration and music live in each site's `assets/`; video composition sources (`composition.html`, `compositions/`) are kept alongside the finished films.
+- **Run it**: `python3 -m http.server 8080`, then open http://localhost:8080. No build step; the player uses the finished films straight from the repo.
+
+## 声明 / Disclaimer
+
+影视化剧情是作者的剪辑与解释，游戏角色、官方素材及相关商标归各自权利人；这是非官方项目。
+
+The dramatized lore is the author's own edit and interpretation. Game characters, official assets and trademarks belong to their respective owners; this is an unofficial fan project.
