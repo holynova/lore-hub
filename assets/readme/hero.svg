@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="360" viewBox="0 0 1200 360"
+     role="img" aria-labelledby="title desc">
+  <title id="title">游戏剧情解析 Lore Hub — 七部游戏的中文剧情视频</title>
+  <desc id="desc">暖黑底横幅：游戏剧情解析，副标题七部游戏的中文剧情视频；右侧是七张迷你游戏海报排成的两行，每张带一个播放三角，象征七部剧情视频；底部是 7 部游戏、总片长约 22 分钟、1080P 章节跳转三个标签。</desc>
+
+  <rect width="1200" height="360" rx="26" fill="#17140f"/>
+
+  <g id="title-block" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="56" y="62" font-size="18" letter-spacing="3" fill="#e0685a">LORE HUB · 游戏剧情解析总站</text>
+    <text x="56" y="134" font-size="62" font-weight="700" fill="#ece7dd">游戏剧情解析</text>
+    <text x="56" y="172" font-size="22" fill="#c9c2b4">七部游戏的中文剧情视频</text>
+    <text x="56" y="210" font-size="19" fill="#a89f92">章节跳转，把因果讲明白。</text>
+    <text x="56" y="240" font-size="18" fill="#8a8272">六幕长篇 × 6，加一部五章速览编年史。</text>
+    <g id="chips" font-size="18" fill="#ece7dd" text-anchor="middle">
+      <g><rect x="56" y="266" width="110" height="36" rx="18" fill="#211d16" stroke="#332d23" stroke-width="1.5"/><text x="111" y="290">7 部游戏</text></g>
+      <g><rect x="178" y="266" width="170" height="36" rx="18" fill="#211d16" stroke="#332d23" stroke-width="1.5"/><text x="263" y="290">总片长约 22 分钟</text></g>
+      <g><rect x="360" y="266" width="170" height="36" rx="18" fill="#211d16" stroke="#332d23" stroke-width="1.5"/><text x="445" y="290">1080P · 章节跳转</text></g>
+    </g>
+  </g>
+
+  <g id="posters">
+    <g><rect x="700" y="40" width="104" height="132" rx="10" fill="#2f4a3a"/><polygon points="744,94 766,106 744,118" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="816" y="40" width="104" height="132" rx="10" fill="#4a3a2f"/><polygon points="860,94 882,106 860,118" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="932" y="40" width="104" height="132" rx="10" fill="#3a3a4a"/><polygon points="976,94 998,106 976,118" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="1048" y="40" width="104" height="132" rx="10" fill="#5c2f2f"/><polygon points="1092,94 1114,106 1092,118" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="758" y="188" width="104" height="132" rx="10" fill="#2f3a4a"/><polygon points="802,242 824,254 802,266" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="874" y="188" width="104" height="132" rx="10" fill="#4a2f3a"/><polygon points="918,242 940,254 918,266" fill="#ece7dd" opacity="0.92"/></g>
+    <g><rect x="990" y="188" width="104" height="132" rx="10" fill="#3a4a2f"/><polygon points="1034,242 1056,254 1034,266" fill="#ece7dd" opacity="0.92"/></g>
+  </g>
+</svg>
